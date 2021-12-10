@@ -10,10 +10,12 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const cookieParser = require('cookie-parser');
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
+const viewRouter = require('./routes/viewRoutes');
 
 const AppError = require('./utils/appError');
 const GlobalErrorHandler = require('./controllers/errorControllers');
@@ -24,6 +26,10 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 // Middlewares
+
+// used to include files in public folder
+// app.use(express.static(`${__dirname}/public`));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // set security http headers
 app.use(helmet());
@@ -43,6 +49,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // used to take json input from req.body
 app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
 
 // data sanatization against nosql query injection
 app.use(mongoSanitize());
@@ -64,10 +71,6 @@ app.use(
   })
 );
 
-// used to include files in public folder
-// app.use(express.static(`${__dirname}/public`));
-app.use(express.static(path.join(__dirname, 'public')));
-
 // app.use((req, res, next) => {
 //   console.log("Custom Middleware Running..");
 //   next();
@@ -79,11 +82,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.patch("/api/v1/tours/:id", updateTourId);
 // app.delete("/api/v1/tours/:id", deleteTourId);
 
-app.get('/', (req, res) => {
-  res.status(200).render('base', { tour: 'The Forest Hiker', user: 'dp' });
+app.use(function (req, res, next) {
+  res.setHeader(
+    'Content-Security-Policy',
+    "connect-src 'self' ws://localhost:*/ http://127.0.0.1:*;"
+  );
+  next();
 });
 
 // Routes -
+app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);

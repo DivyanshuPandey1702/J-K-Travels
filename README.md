@@ -1,5 +1,5 @@
-# Natours
-A tour website api
+# J&K Travels
+A Tourism Website
 
-
-Api Link: https://documenter.getpostman.com/view/15138055/UV5WDJ1a
+Website: https://jktravels.herokuapp.com/
+API: https://documenter.getpostman.com/view/15138055/UV5WDJ1a

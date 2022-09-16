@@ -26,6 +26,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.9",
     "morgan": "^1.10.0",
+    "multer": "^1.4.4",
     "nodemailer": "^6.6.5",
     "parcel-bundler": "^1.12.5",
     "pug": "^3.0.2",
